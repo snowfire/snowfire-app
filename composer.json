@@ -23,5 +23,12 @@
             "Snowfire\\App\\": "src/Snowfire/App/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Snowfire\\App\\SnowfireServiceProvider"
+            ]
+        }
+    }
 }

@@ -23,15 +23,17 @@ class SnowfireServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		include __DIR__ . '/../../routes.php';
+		$this->loadRoutesFrom(__DIR__ . '/../../routes.php');
 
+		// Config publishing
 		$this->publishes([
 			__DIR__ . '/../../config/snowfire.php' => config_path('snowfire.php'),
-		]);
+		], 'snowfire-config');
 
+		// Migrations publishing
 		$this->publishes([
-		    __DIR__.'/../../migrations/' => base_path('/database/migrations')
-		], 'migrations');
+		    __DIR__.'/../../migrations/' => database_path('migrations')
+		], 'snowfire-migrations');
 	}
 
 	/**
