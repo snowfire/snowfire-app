@@ -1,8 +1,11 @@
-<?php namespace Snowfire\App;
+<?php
+
+namespace Snowfire\App;
 
 use Illuminate\Support\ServiceProvider;
-use Config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Route;
 
 class SnowfireServiceProvider extends ServiceProvider {
 
@@ -42,7 +45,7 @@ class SnowfireServiceProvider extends ServiceProvider {
 			__DIR__ . '/../../config/snowfire.php', 'snowfire'
 		);
 
-		$this->app['snowfire'] = $this->app->share(function($app)
+		$this->app->singleton('snowfire', function($app)
 		{
 			$defaultConfig = [
 				'acceptUrl' => route('snowfire.accept'),
@@ -69,7 +72,7 @@ class SnowfireServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('snowfire');
+		return ['snowfire'];
 	}
 
 }

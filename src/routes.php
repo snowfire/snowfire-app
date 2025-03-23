@@ -1,12 +1,19 @@
 <?php
 
-Route::group(['prefix' => 'snowfire'], function() {
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Snowfire\App\Facades\Snowfire;
 
-    Route::get('/install', ['as' => 'snowfire.install', function() {
+Route::group(['prefix' => 'snowfire', 'middleware' => ['web']], function() {
+
+    Route::get('/install', function() {
         return Response::make(Snowfire::xml(), 200, ['content-type' => 'text/xml']);
-    }]);
+    })->name('snowfire.install');
 
-    Route::post('/accept', ['as' => 'snowfire.accept', function()
+    Route::post('/accept', function()
     {
         $storage = \Snowfire\App\Storage\AccountStorage::where('site_url', '=', Request::get('domain'))->first();
 
@@ -23,9 +30,9 @@ Route::group(['prefix' => 'snowfire'], function() {
 
         //Log::info('sfapp/accept', [$_GET, $_POST]);
         return Response::make(Snowfire::response(true), 200, ['content-type' => 'text/xml']);
-    }]);
+    })->name('snowfire.accept');
 
-    Route::post('/uninstall', ['as' => 'snowfire.uninstall', function()
+    Route::post('/uninstall', function()
     {
         //Log::info('sfapp/uninstall', [$_GET, $_POST]);
         $account = \Snowfire\App\Storage\AccountStorage::whereAppKey(Request::get('appKey'))->first();
@@ -33,10 +40,10 @@ Route::group(['prefix' => 'snowfire'], function() {
         $account->save();
 
         return Response::make(Snowfire::response(true), 200, ['content-type' => 'text/xml']);
-    }]);
+    })->name('snowfire.uninstall');
 
     // Admin tab
-    Route::get('/tab-proxy', ['as' => 'snowfire.tab', function()
+    Route::get('/tab-proxy', function()
     {
         $accountsRepository = app('Snowfire\App\Repositories\AccountsRepository');
         $appKey = Request::get('snowfireAppKey');
@@ -55,10 +62,10 @@ Route::group(['prefix' => 'snowfire'], function() {
 
         return Redirect::route(Snowfire::parameter('tabRedirectRoute'), [$app->id]);
 
-    }]);
+    })->name('snowfire.tab');
 
     // Proxy an URL to send a user between core domain and snowfire loaded app
-    Route::get('snowfire/proxy/{hash}', ['as' => 'snowfire.proxy', function($hash)
+    Route::get('proxy/{hash}', function($hash)
     {
         $proxy = \Snowfire\App\Proxy::getByHash($hash);
 
@@ -71,6 +78,6 @@ Route::group(['prefix' => 'snowfire'], function() {
         \Snowfire\App\Proxy::cleanup();
 
         return Redirect::to($proxy->to_url);
-    }]);
+    })->name('snowfire.proxy');
 
 });

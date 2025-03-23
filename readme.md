@@ -1,21 +1,43 @@
 ## Snowfire App
 
-This packages makes it possible to connect your Laravel app to Snowfire.
+This package makes it possible to connect your Laravel app to Snowfire.
+
+## Laravel Compatibility
+
+This package is compatible with Laravel 5 through Laravel 12.
 
 ## Install the package
 
 Add this to your composer.json
 
-	"snowfire/snowfire-app": "dev-master"
+```json
+"snowfire/snowfire-app": "dev-master"
+```
+
+Or install via Composer:
+
+```bash
+composer require snowfire/snowfire-app
+```
+
+### Laravel 5
 
 Add this to your service providers in `config/app.php`
 
-    'Snowfire\App\SnowfireServiceProvider'
+```php
+'Snowfire\App\SnowfireServiceProvider'
+```
+
+### Laravel 6+
+
+Service providers are auto-discovered in Laravel 6+.
 
 Add this to your route middlewares in `app/Http/Kernel.php`
 
-    'snowfire' => 'Snowfire\App\Middleware\SnowfireMiddleware',
-    'snowfireAdmin' => 'Snowfire\App\Middleware\SnowfireAdminMiddleware',
+```php
+'snowfire' => \Snowfire\App\Middleware\SnowfireMiddleware::class,
+'snowfireAdmin' => \Snowfire\App\Middleware\SnowfireAdminMiddleware::class,
+```
 
 Publish the config file
 

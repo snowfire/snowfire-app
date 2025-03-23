@@ -1,6 +1,12 @@
-<?php namespace Snowfire\App\Middleware;
+<?php
+
+namespace Snowfire\App\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Config;
+use Snowfire\App\Facades\Snowfire;
 
 class SnowfireMiddleware {
 
@@ -11,15 +17,15 @@ class SnowfireMiddleware {
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
+	public function handle(Request $request, Closure $next)
 	{
-        if ( ! \Snowfire::isRequestFromSnowfire() && ! config('snowfire.debug'))  {
-            return \Response::make('Please request this url from a Snowfire component', 500);
+        if ( ! Snowfire::isRequestFromSnowfire() && ! Config::get('snowfire.debug'))  {
+            return Response::make('Please request this url from a Snowfire component', 500);
         }
 
         $accountsRepository = app()->make('\Snowfire\App\Repositories\AccountsRepository');
 
-        if (config('snowfire.debug')) {
+        if (Config::get('snowfire.debug')) {
 
             // In debug mode, use the first account id
             $app = $accountsRepository->first();
