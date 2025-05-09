@@ -19,7 +19,7 @@ class SnowfireAdminMiddleware {
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-        $id = $request->route()->getParameter('snowfireAppId');
+        $id = $request->route()->parameter('snowfireAppId');
         $accountsRepository = app()->make('\Snowfire\App\Repositories\AccountsRepository');
         $app = $accountsRepository->getById($id);
 
