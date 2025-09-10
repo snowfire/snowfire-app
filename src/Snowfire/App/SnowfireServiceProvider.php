@@ -1,8 +1,11 @@
-<?php namespace Snowfire\App;
+<?php
+
+namespace Snowfire\App;
 
 use Illuminate\Support\ServiceProvider;
-use Config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Route;
 
 class SnowfireServiceProvider extends ServiceProvider {
 
@@ -20,15 +23,17 @@ class SnowfireServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		include __DIR__ . '/../../routes.php';
+		$this->loadRoutesFrom(__DIR__ . '/../../routes.php');
 
+		// Config publishing
 		$this->publishes([
 			__DIR__ . '/../../config/snowfire.php' => config_path('snowfire.php'),
-		]);
+		], 'snowfire-config');
 
+		// Migrations publishing
 		$this->publishes([
-		    __DIR__.'/../../migrations/' => base_path('/database/migrations')
-		], 'migrations');
+		    __DIR__.'/../../migrations/' => database_path('migrations')
+		], 'snowfire-migrations');
 	}
 
 	/**
@@ -42,7 +47,7 @@ class SnowfireServiceProvider extends ServiceProvider {
 			__DIR__ . '/../../config/snowfire.php', 'snowfire'
 		);
 
-		$this->app['snowfire'] = $this->app->share(function($app)
+		$this->app->singleton('snowfire', function($app)
 		{
 			$defaultConfig = [
 				'acceptUrl' => route('snowfire.accept'),
@@ -69,7 +74,7 @@ class SnowfireServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('snowfire');
+		return ['snowfire'];
 	}
 
 }
